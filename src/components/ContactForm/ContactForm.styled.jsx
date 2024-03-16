@@ -4,24 +4,26 @@ export const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-bottom: 20px;
   width: 300px;
   padding: 20px;
-  border: none;
-  border-radius: 10px;
-  background-color: #b3f3e6;
 `;
 export const Input = styled.input`
-  width: 250px;
+  margin-top: 4px;
+  width: 280px;
   height: 24px;
   padding: 5px 10px;
   border-radius: 10px;
   border: 1px solid #8aa6a3;
-  outline: 1px solid #8aa6a3;
-  background-color: rgb(241, 255, 252);
+
+  background-color: rgb(246, 249, 248);
+  &:focus {
+    outline: 1px solid #8aa6a3;
+  }
 `;
 export const Button = styled.button`
   width: 160px;
-  margin-top: 20px;
+  margin-top: 10px;
   margin-left: auto;
   margin-right: auto;
   padding: 10px;

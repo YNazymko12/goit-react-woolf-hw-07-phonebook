@@ -1,13 +1,13 @@
 import { nanoid } from '@reduxjs/toolkit';
 import { useSelector, useDispatch } from 'react-redux';
-import { getFilter } from 'store/selectors';
+import { selectFilter } from 'store/selectors';
 import { changeFilter } from 'store/filterSlice';
 import { FilterWrap, FilterInput } from './Filter.styled';
 
 const filterGenerateId = nanoid();
 
 export function Filter() {
-  const value = useSelector(getFilter);
+  const value = useSelector(selectFilter);
   const dispatch = useDispatch();
 
   const onChange = e => {
@@ -18,15 +18,17 @@ export function Filter() {
 
   return (
     <FilterWrap>
-      <label htmlFor="filter">Find contacts by name:</label>
-      <FilterInput
-        id={filterGenerateId}
-        type="text"
-        name="filter"
-        placeholder="Search contacts"
-        value={value}
-        onChange={onChange}
-      />
+      <label htmlFor="filter">
+        Find contacts by name:
+        <FilterInput
+          id={filterGenerateId}
+          type="text"
+          name="filter"
+          placeholder="Search contacts"
+          value={value}
+          onChange={onChange}
+        />
+      </label>
     </FilterWrap>
   );
 }

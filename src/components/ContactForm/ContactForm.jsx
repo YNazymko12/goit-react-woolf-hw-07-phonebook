@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { nanoid } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
-import { getVisibleContacts } from 'store/selectors';
-import { addContact } from 'store/contactsSlice';
+import { selectVisibleContacts } from 'store/selectors';
+import { addContacts } from 'store/operations';
 import { Form, Input, Button } from './ContactForm.styled';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const nameInputId = nanoid();
 const numberInputId = nanoid();
@@ -12,7 +13,7 @@ export function ContactForm() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
-  const contacts = useSelector(getVisibleContacts);
+  const contacts = useSelector(selectVisibleContacts);
   const dispatch = useDispatch();
 
   const handleChange = e => {
@@ -40,37 +41,50 @@ export function ContactForm() {
     );
 
     if (isDuplicate) {
-      alert(`${name} or ${number} is already in contacts`);
-      return;
+      return Notify.warning(`${name} is already in the contacts`);
     }
 
-    dispatch(addContact({ name, number }));
+    dispatch(addContacts({ name, number }))
+      .unwrap()
+      .then(() => {
+        Notify.success(`New contact success added`);
+      })
+      .catch(() => {
+        Notify.failure('OOPS...');
+      });
+
     setName('');
     setNumber('');
   };
 
   return (
     <Form onSubmit={handleSubmit}>
-      <label htmlFor={nameInputId}>Name</label>
-      <Input
-        type="text"
-        name="name"
-        pattern="^[a-zA-Zа-яА-Я]+(([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-        title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-        required
-        value={name}
-        onChange={handleChange}
-      />
-      <label htmlFor={numberInputId}>Number</label>
-      <Input
-        type="tel"
-        name="number"
-        pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
-        title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-        required
-        value={number}
-        onChange={handleChange}
-      />
+      <label htmlFor={nameInputId}>
+        Name
+        <Input
+          type="text"
+          name="name"
+          pattern="^[a-zA-Zа-яА-Я]+(([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+          required
+          value={name}
+          onChange={handleChange}
+        />
+      </label>
+
+      <label htmlFor={numberInputId}>
+        Number
+        <Input
+          type="tel"
+          name="number"
+          pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
+          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+          required
+          value={number}
+          onChange={handleChange}
+        />
+      </label>
+
       <Button type="submit">Add contact</Button>
     </Form>
   );
